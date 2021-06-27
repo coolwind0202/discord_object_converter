@@ -14,7 +14,6 @@ def login_handler(r, code):
 
 async def app_factory():
     app = web.Application()
-
     app.add_subapp(
         '/github/',
         github(
@@ -24,6 +23,7 @@ async def app_factory():
             on_login=login_handler
         ),
     )
+    print(app.router['callback'].url_for())
 
     return app
 
