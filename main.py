@@ -6,8 +6,8 @@ import asyncio
 from aiohttp import web
 from aiohttp_oauth2 import oauth2_app
 
-
-bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'))
+loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
+bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
 
 def login_handler(r, code):
     print(r,code)
@@ -43,8 +43,11 @@ async def app_start():
     app = await app_factory()
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.1', 8080)
+    site = web.TCPSite(runner, '0.0.0.0', 443)
     await site.start()
 
-
-asyncio.run(asyncio.gather((os.getenv('DISCORD_BOT_TOKEN')), app_start()))
+loop.create_task(app_start())
+loop.create_task(bot.start(
+    os.getenv('DISCORD_BOT_TOKEN')
+))
+asyncio.get_event_loop().run_forever()
