@@ -43,7 +43,7 @@ async def app_start():
     app = await app_factory()
     runner = web.AppRunner(app)
     await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', 443)
+    site = web.TCPSite(runner, '0.0.0.0', int(os.getenv('PORT', 3000)))
     await site.start()
 
 loop.create_task(app_start())
