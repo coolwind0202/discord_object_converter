@@ -6,8 +6,14 @@ name = "pypi"
 [packages]
 "discord.py" = "*"
 aiohttp-oauth2 = "*"
+aiohttp-session = {extras = ["secure"], version = "*"}
+aiohttp-remotes = "*"
+aiohttp-jinja2 = "*"
+aioauth-client = "*"
+toml = "*"
 
 [dev-packages]
+dpytest = "*"
 
 [requires]
 python_version = "3.8"
