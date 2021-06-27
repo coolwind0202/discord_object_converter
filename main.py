@@ -23,7 +23,6 @@ async def app_factory():
             on_login=login_handler
         ),
     )
-    print(app.router['callback'].url_for())
 
     return app
 
