@@ -4,7 +4,7 @@ import os
 import asyncio
 
 from aiohttp import web
-from aiohttp_oauth2 import oauth2_app
+from aiohttp_oauth2.client.contrib import github
 
 loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
 bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
@@ -16,15 +16,13 @@ async def app_factory():
     app = web.Application()
 
     app.add_subapp(
-        '/github/',  # any arbitrary prefix
-        oauth2_app(
-            client_id=os.getenv('GITHUB_CLIENT_ID'),
-            client_secret=os.getenv('GITHUB_CLIENT_SECRET'),
-            authorize_url='https://github.com/login/oauth/authorize',
-            token_url='https://github.com/login/oauth/access_token',
+        '/github/',
+        github(
+            os.getenv('GITHUB_CLIENT_ID'),
+            os.getenv('GITHUB_CLIENT_SECRET'),
             scopes=['admin:repo_hook'],
             on_login=login_handler
-        )
+        ),
     )
 
     return app
