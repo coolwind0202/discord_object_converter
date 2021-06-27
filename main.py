@@ -9,7 +9,7 @@ from aiohttp_oauth2.client.contrib import github
 loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
 bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
 
-def login_handler(r, code):
+async def login_handler(r, code):
     print(r,code)
 
 async def app_factory():
