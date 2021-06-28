@@ -15,7 +15,7 @@ bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), 
 
 async def app_factory():
     app = web.Application()
-    setup(app, SimpleCookieStorage())
+    setup(app, SimpleCookieStorage(max_age=600))
 
     app['sessions'] = {}
     app['github_tokens'] = {}
