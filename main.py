@@ -63,7 +63,8 @@ async def app_factory():
             authorize_url='https://discord.com/api/oauth2/authorize',
             token_url='https://discord.com/api/oauth2/token',
             scopes=["identify"],
-            on_login=on_discord_login
+            on_login=on_discord_login,
+            json_data=False
         )
     )
     app.add_subapp(
