@@ -20,7 +20,7 @@ async def app_factory():
     app['sessions'] = {}
     app['github_tokens'] = {}
 
-    forward_setup(app, ForwardedRelaxed())
+    await forward_setup(app, ForwardedRelaxed())
 
     def get_session_id():
         return secrets.token_bytes()
