@@ -27,16 +27,19 @@ async def app_factory():
 
     async def on_discord_login(request: web.Request, discord_token: str):
         session = await get_session(request)
+        print(session)
         session_id = get_session_id()
         app['sessions'][session_id] = discord_token
         session['session_id'] = session_id
 
-        print(app['sessions'])
+        #print(app['sessions'])
+        print(session)
 
         return web.HTTPTemporaryRedirect(location="/github/auth")
 
     async def on_github_login(request: web.Request, github_token: str):
         session = await get_session(request)
+        print(session)
         session_id = session.get('session_id')
         if session_id is None:
             return web.HTTPTemporaryRedirect(location="/discord/auth")
@@ -44,7 +47,7 @@ async def app_factory():
         discord_token = app['sessions'][session_id]  #  Discord　トークンを利用する
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + discord_token
+            'Authorization': 'Bearer ' + discord_token['access_token']
         }
         async with ClientSession(headers=headers) as session:
             async with session.get('https://discord.com/api/v8/users/@me/') as resp:
