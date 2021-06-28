@@ -23,7 +23,7 @@ async def app_factory():
     await forward_setup(app, XForwardedRelaxed())
 
     def get_session_id():
-        return secrets.token_bytes()
+        return secrets.token_hex()
 
     async def on_discord_login(request: web.Request, discord_token: str):
         session = await get_session(request)
