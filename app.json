@@ -11,6 +11,14 @@
         "description": "Discord BOT のコマンドプレフィックス",
         "value": ""
       },
+      "DISCORD_CLIENT_ID": {
+        "description": "Discord BOT のID",
+        "value": ""
+      },
+      "DISCORD_CLIENT_SECRET": {
+        "description": "Discord アプリの OAuth2　シークレット",
+        "value": ""
+      },
       "GITHUB_CLEINT_ID": {
         "description": "GitHub OAuth2 App のクライアントID", 
         "value": ""
