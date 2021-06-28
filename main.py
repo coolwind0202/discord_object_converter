@@ -8,6 +8,7 @@ from aiohttp import web, ClientSession
 from aiohttp_oauth2 import oauth2_app
 from aiohttp_oauth2.client.contrib import github
 from aiohttp_session import SimpleCookieStorage, get_session, setup
+from aiohttp_remotes import ForwardedRelaxed, setup as forward_setup
 
 loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
 bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
@@ -15,9 +16,11 @@ bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), 
 async def app_factory():
     app = web.Application()
     setup(app, SimpleCookieStorage())
-    
+
     app['sessions'] = {}
     app['github_tokens'] = {}
+
+    forward_setup(app, ForwardedRelaxed())
 
     def get_session_id():
         return secrets.token_bytes()

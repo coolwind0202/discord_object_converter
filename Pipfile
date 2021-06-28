@@ -7,6 +7,7 @@ name = "pypi"
 "discord.py" = "*"
 aiohttp-oauth2 = "*"
 aiohttp-session = "*"
+aiohttp-remotes = "*"
 
 [dev-packages]
 
