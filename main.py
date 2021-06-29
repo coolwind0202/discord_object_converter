@@ -108,8 +108,6 @@ async def app_factory():
     storage = RedirectableStorage(secret_key, max_age=600)
     # setup(app, storage)
     app.middlewares.append(session_middleware(storage))
-
-    app['sessions'] = {}
     app['github_tokens'] = {}
 
     await forward_setup(app, XForwardedRelaxed())
@@ -124,7 +122,10 @@ async def app_factory():
         session_id = get_session_id()
         print(request.app['session'])
         #request.app['session'][session_id] = discord_token
-        app['sessions'][session_id] = discord_token
+        if 'sessions' not in request.app:
+            request.app['sessions'] = {}
+        
+        request.app['sessions'][session_id] = discord_token
 
         session['session_id'] = session_id
         
