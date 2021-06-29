@@ -109,7 +109,7 @@ async def app_factory():
     # setup(app, storage)
     app.middlewares.append(session_middleware(storage))
 
-    app['sessions'] = {}
+    #app['sessions'] = {}
     app['github_tokens'] = {}
 
     await forward_setup(app, XForwardedRelaxed())
@@ -121,7 +121,8 @@ async def app_factory():
         session = await get_session(request)
         print(session)
         session_id = get_session_id()
-        app['sessions'][session_id] = discord_token
+        print(request.app['session'])
+        #request.app['session'][session_id] = discord_token
 
         session['session_id'] = session_id
         
