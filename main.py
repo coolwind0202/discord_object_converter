@@ -22,7 +22,7 @@ bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), 
 
 import jinja2
 from aiohttp_jinja2 import setup as jinja2_setup, template
-from aiohttp_session import SimpleCookieStorage, AbstractStorage, get_session, setup as session_setup
+from aiohttp_session import SimpleCookieStorage, AbstractStorage, get_session, new_session, setup as session_setup
 from aiohttp.web_middlewares import _Handler, _Middleware
 
 from aiohttp_oauth2.client.contrib import github
@@ -109,7 +109,7 @@ async def app_factory():
     # setup(app, storage)
     app.middlewares.append(session_middleware(storage))
 
-    #app['sessions'] = {}
+    app['sessions'] = {}
     app['github_tokens'] = {}
 
     await forward_setup(app, XForwardedRelaxed())
@@ -118,17 +118,19 @@ async def app_factory():
         return secrets.token_hex()
 
     async def on_discord_login(request: web.Request, discord_token: str):
-        session = await get_session(request)
-        print(session)
+        #session = await get_session(request)
+        session = await new_session(request)
+        print("before:",session)
         session_id = get_session_id()
         print(request.app['session'])
         #request.app['session'][session_id] = discord_token
+        app['sessions'][session_id] = discord_token
 
         session['session_id'] = session_id
         
 
         #print(app['sessions'])
-        print(session)
+        print("after:",session)
 
         return aiohttp_jinja2.render_template('github_oauth.html', request, None)
 
