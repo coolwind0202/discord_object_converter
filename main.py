@@ -6,6 +6,7 @@ import secrets
 from typing import Dict, Any, Optional
 from pathlib import Path
 import time
+import base64
 
 from aiohttp import web, ClientSession
 from aiohttp_oauth2 import oauth2_app
@@ -13,6 +14,7 @@ from aiohttp_oauth2.client.contrib import github
 from aiohttp_session import SimpleCookieStorage, get_session, setup
 from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiohttp_remotes import XForwardedRelaxed, setup as forward_setup
+from cryptography import fernet
 
 loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
 bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
@@ -52,9 +54,11 @@ async def index(request: web.Request) -> Dict[str, Any]:
 async def app_factory():
     app = web.Application()
 
-    app = web.Application()
+    fernet_key = fernet.Fernet.generate_key()
+    secret_key = base64.urlsafe_b64decode(fernet_key)
+
     jinja2_setup(app, loader=jinja2.FileSystemLoader(Path(__file__).parent / 'web/templates'))
-    setup(app, RedirectableStorage(max_age=600))
+    setup(app, RedirectableStorage(secret_key, max_age=600))
 
     app['sessions'] = {}
     app['github_tokens'] = {}
