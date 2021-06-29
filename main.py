@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 import asyncio
 import secrets
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 from pathlib import Path
 import time
 import base64
@@ -21,10 +21,53 @@ bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), 
 
 import jinja2
 from aiohttp_jinja2 import setup as jinja2_setup, template
-from aiohttp_session import SimpleCookieStorage, get_session, setup as session_setup
-
+from aiohttp_session import SimpleCookieStorage, AbstractStorage, get_session, setup as session_setup
+from aiohttp.web_middlewares import _Handler, _Middleware
 
 from aiohttp_oauth2.client.contrib import github
+
+def session_middleware(storage: 'AbstractStorage') -> _Middleware:
+    if not isinstance(storage, AbstractStorage):
+        raise RuntimeError("Expected AbstractStorage got {}".format(storage))
+
+    @web.middleware
+    async def factory(
+        request: web.Request,
+        handler: _Handler
+    ) -> web.StreamResponse:
+        SESSION_KEY = 'aiohttp_session'
+        STORAGE_KEY = 'aiohttp_session_storage'
+        request[STORAGE_KEY] = storage
+        raise_response = False
+        # TODO aiohttp 4: Remove Union from response, and drop the raise_response variable
+        response: Union[web.StreamResponse, web.HTTPException]
+        try:
+            print('call handler')
+            response = await handler(request)
+            print('called handler', response)
+        except web.HTTPException as exc:
+            response = exc
+            raise_response = True
+        if not isinstance(response, (web.StreamResponse, web.HTTPException)):
+            raise RuntimeError(
+                "Expect response, not {!r}".format(type(response)))
+        if not isinstance(response, (web.Response, web.HTTPException)):
+            # likely got websocket or streaming
+            return response
+        if response.prepared:
+            raise RuntimeError(
+                "Cannot save session data into prepared response")
+        session = request.get(SESSION_KEY)
+        print(session)
+        if session is not None:
+            if session._changed:
+                await storage.save_session(request, response, session)
+        if raise_response:
+            #raise cast(web.HTTPException, response)
+            pass
+        return response
+
+    return factory
 
 class RedirectableStorage(EncryptedCookieStorage):
     def save_cookie(
@@ -45,10 +88,10 @@ class RedirectableStorage(EncryptedCookieStorage):
                                 path=params["path"])
         else:
             # Ignoring type for params until aiohttp#4238 is released
-            # response.set_cookie(self._cookie_name, cookie_data, **params)  # type: ignore
+            response.set_cookie(self._cookie_name, cookie_data, **params)  # type: ignore
             
-            response.cookies[self._cookie_name] = cookie_data
-        print(response.cookies)
+            #response.cookies[self._cookie_name] = cookie_data
+        #print(response.cookies)
 
 @template("github_oauth.html")
 async def index(request: web.Request) -> Dict[str, Any]:
@@ -61,7 +104,9 @@ async def app_factory():
     secret_key = base64.urlsafe_b64decode(fernet_key)
 
     jinja2_setup(app, loader=jinja2.FileSystemLoader(Path(__file__).parent / 'web/templates'))
-    setup(app, RedirectableStorage(secret_key, max_age=600))
+    storage = RedirectableStorage(secret_key, max_age=600)
+    # setup(app, storage)
+    app.middlewares.append(session_middleware(storage))
 
     app['sessions'] = {}
     app['github_tokens'] = {}
@@ -76,7 +121,9 @@ async def app_factory():
         print(session)
         session_id = get_session_id()
         app['sessions'][session_id] = discord_token
+
         session['session_id'] = session_id
+        
 
         #print(app['sessions'])
         print(session)
