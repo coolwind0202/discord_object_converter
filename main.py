@@ -1,3 +1,4 @@
+import aiohttp_jinja2
 import discord
 from discord.ext import commands
 import os
@@ -128,7 +129,7 @@ async def app_factory():
         #print(app['sessions'])
         print(session)
 
-        return web.HTTPTemporaryRedirect(location="/github/auth")
+        return aiohttp_jinja2.render_template('github_oauth.html', request, None)
 
     async def on_github_login(request: web.Request, github_token: str):
         session = await get_session(request)
