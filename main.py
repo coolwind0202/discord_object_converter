@@ -124,7 +124,7 @@ async def app_factory():
         session_id = get_session_id()
         print(request.app['session'])
         #request.app['session'][session_id] = discord_token
-        app['sessions'][session_id] = discord_token
+        request.app['sessions'][session_id] = discord_token
 
         session['session_id'] = session_id
         
