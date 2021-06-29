@@ -96,6 +96,8 @@ class RedirectableStorage(EncryptedCookieStorage):
 
 @template("github_oauth.html")
 async def index(request: web.Request) -> Dict[str, Any]:
+    session = await get_session(request)
+    print("session:", session)
     return {}
 
 async def app_factory():
