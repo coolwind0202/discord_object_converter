@@ -8,6 +8,7 @@ name = "pypi"
 aiohttp-oauth2 = "*"
 aiohttp-session = "*"
 aiohttp-remotes = "*"
+aiohttp-jinja2 = "*"
 
 [dev-packages]
 

@@ -3,19 +3,58 @@ from discord.ext import commands
 import os
 import asyncio
 import secrets
+from typing import Dict, Any, Optional
+from pathlib import Path
+import time
 
 from aiohttp import web, ClientSession
 from aiohttp_oauth2 import oauth2_app
 from aiohttp_oauth2.client.contrib import github
 from aiohttp_session import SimpleCookieStorage, get_session, setup
+from aiohttp_session.cookie_storage import EncryptedCookieStorage
 from aiohttp_remotes import XForwardedRelaxed, setup as forward_setup
 
 loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
 bot = commands.Bot(command_prefix=os.getenv('DISCORD_BOT_PREFIX', 'template-'), loop=loop)
 
+import jinja2
+from aiohttp_jinja2 import setup as jinja2_setup, template
+from aiohttp_session import SimpleCookieStorage, get_session, setup as session_setup
+
+
+from aiohttp_oauth2.client.contrib import github
+
+class RedirectableStorage(EncryptedCookieStorage):
+    def save_cookie(
+        self,
+        response: web.StreamResponse,
+        cookie_data: str, *,
+        max_age: Optional[int] = None
+    ) -> None:
+        params = self._cookie_params.copy()
+        params['secure'] = True
+        params['samesite'] = 'None'
+        if max_age is not None:
+            params['max_age'] = max_age
+            t = time.gmtime(time.time() + max_age)
+            params["expires"] = time.strftime("%a, %d-%b-%Y %T GMT", t)
+        if not cookie_data:
+            response.del_cookie(self._cookie_name, domain=params["domain"],
+                                path=params["path"])
+        else:
+            # Ignoring type for params until aiohttp#4238 is released
+            response.set_cookie(self._cookie_name, cookie_data, **params)  # type: ignore
+
+@template("github_oauth.html")
+async def index(request: web.Request) -> Dict[str, Any]:
+    return {}
+
 async def app_factory():
     app = web.Application()
-    setup(app, SimpleCookieStorage(max_age=600))
+
+    app = web.Application()
+    jinja2_setup(app, loader=jinja2.FileSystemLoader(Path(__file__).parent / 'web/templates'))
+    setup(app, RedirectableStorage(max_age=600))
 
     app['sessions'] = {}
     app['github_tokens'] = {}
