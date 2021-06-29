@@ -46,7 +46,9 @@ class RedirectableStorage(EncryptedCookieStorage):
         else:
             # Ignoring type for params until aiohttp#4238 is released
             # response.set_cookie(self._cookie_name, cookie_data, **params)  # type: ignore
+            
             response.cookies[self._cookie_name] = cookie_data
+        print(response.cookies)
 
 @template("github_oauth.html")
 async def index(request: web.Request) -> Dict[str, Any]:
