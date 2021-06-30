@@ -36,7 +36,7 @@ async def on_github_login(request: web.Request, github_token):
     return web.HTTPTemporaryRedirect(location="/")
 
 
-async def app_factory() -> web.Application:
+def app_factory() -> web.Application:
     app = web.Application()
 
     jinja2_setup(
@@ -44,7 +44,7 @@ async def app_factory() -> web.Application:
     )
     session_setup(app, SimpleCookieStorage())
     loop = asyncio.get_event_loop()
-    loop.create_task(forward_setup(app, XForwardedRelaxed()))
+    loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
 
     app.add_subapp(
         "/auth/github/",
