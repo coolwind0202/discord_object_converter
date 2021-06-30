@@ -55,3 +55,7 @@ def app_factory() -> web.Application:
     app.add_routes([web.get("/", index), web.get("/auth/logout", logout)])
 
     return app
+
+
+if __name__ == "__main__":
+    web.run_app(app_factory(), host="0.0.0.1")
