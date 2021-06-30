@@ -49,8 +49,8 @@ def app_factory() -> web.Application:
     app.add_subapp(
         "/auth/github/",
         github(
-            os.getenv('GITHUB_CLIENT_ID'),
-            os.getenv('GITHUB_CLIENT_SECRET'),
+            '4f92b96e7fd001b6f957',
+            'bccaf8f76fb8e4fd1c6d0ebfb1e0348a6a3d8674',
             on_login=on_github_login,
         ),
     )
@@ -62,3 +62,4 @@ def app_factory() -> web.Application:
 
 if __name__ == "__main__":
     web.run_app(app_factory(), host="0.0.0.0", port=int(os.getenv('PORT')))
+    #web.run_app(app_factory(), host="127.0.0.1", port=3000)
