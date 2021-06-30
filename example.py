@@ -12,7 +12,6 @@ from aiohttp_remotes import XForwardedRelaxed, setup as forward_setup
 #from aiohttp_oauth2.client.contrib import github
 from aioauth_client import GithubClient, DiscordClient
 
-
 @template("index.html")
 async def index(request: web.Request) -> Dict[str, Any]:
     session = await get_session(request)
@@ -36,7 +35,7 @@ async def github(request):
     # Get a resource `https://api.github.com/user`
     response = await github.request('GET', 'user')
     print(response)
-    session = await new_session(request)
+    session = await get_session(request)
     session['username'] = response
     return {}
 
@@ -58,7 +57,7 @@ async def discord(request):
     response = await discord.request('GET', discord.user_info_url)
     
     print(response)
-    session = await get_session(request)
+    session = await new_session(request)
     session['discord'] = response
     return {}
 
