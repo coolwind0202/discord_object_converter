@@ -40,21 +40,31 @@ async def github(request):
     session['username'] = response
     return {}
 
+@template("discord_oauth.html")
+async def discord(request):
+    discord = DiscordClient(
+        client_id=os.getenv('DISCORD_CLIENT_ID'),
+        client_secret=os.getenv('DISCORD_CLIENT_SECRET'),
+    )
+    if 'code' not in request.url.query:
+        return web.HTTPTemporaryRedirect(discord.get_authorize_url(scope='identify'))
+
+    # Get access token
+    code = request.url.query['code']
+    token, _ = await discord.get_access_token(code)
+    assert token
+
+    # Get a resource `https://api.github.com/user`
+    response = await discord.request('GET', discord.user_info_url)
+    
+    print(response)
+    session = await get_session(request)
+    session['discord'] = response
+    return {}
+
 async def logout(request: web.Request):
     session = await get_session(request)
     session.invalidate()
-    return web.HTTPTemporaryRedirect(location="/")
-
-
-async def on_github_login(request: web.Request, github_token):
-    session = await get_session(request)
-
-    async with request.app["session"].get(
-        "https://api.github.com/user",
-        headers={"Authorization": f"Bearer {github_token['access_token']}"},
-    ) as r:
-        session["user"] = await r.json()
-
     return web.HTTPTemporaryRedirect(location="/")
 
 
@@ -68,7 +78,7 @@ def app_factory() -> web.Application:
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
 
-    app.add_routes([web.get("/", index), web.get("/github/", github), web.get("/auth/logout", logout)])
+    app.add_routes([web.get("/", index), web.get("/github/", github), web.get("/discord/", discord), web.get("/auth/logout", logout)])
 
     return app
 
