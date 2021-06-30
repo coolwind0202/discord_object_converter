@@ -9,6 +9,7 @@ aiohttp-oauth2 = "*"
 aiohttp-session = {extras = ["secure"], version = "*"}
 aiohttp-remotes = "*"
 aiohttp-jinja2 = "*"
+aioauth-client = "*"
 
 [dev-packages]
 
