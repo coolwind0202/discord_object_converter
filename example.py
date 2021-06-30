@@ -43,7 +43,8 @@ async def app_factory() -> web.Application:
         app, loader=jinja2.FileSystemLoader([Path(__file__).parent / "web/templates"])
     )
     session_setup(app, SimpleCookieStorage())
-    await forward_setup(app, XForwardedRelaxed())
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
 
     app.add_subapp(
         "/auth/github/",
@@ -60,5 +61,4 @@ async def app_factory() -> web.Application:
 
 
 if __name__ == "__main__":
-    app = asyncio.run(app_factory())
-    web.run_app(app, host="0.0.0.0", port=int(os.getenv('PORT')))
+    web.run_app(app_factory, host="0.0.0.0", port=int(os.getenv('PORT')))
