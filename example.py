@@ -44,7 +44,7 @@ async def app_factory() -> web.Application:
     )
     session_setup(app, SimpleCookieStorage())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
+    loop.create_task(forward_setup(app, XForwardedRelaxed()))
 
     app.add_subapp(
         "/auth/github/",
