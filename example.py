@@ -58,4 +58,4 @@ def app_factory() -> web.Application:
 
 
 if __name__ == "__main__":
-    web.run_app(app_factory(), host="0.0.0.0")
+    web.run_app(app_factory(), host="0.0.0.0", port=int(os.getenv('PORT')))
