@@ -43,8 +43,8 @@ def app_factory() -> web.Application:
         app, loader=jinja2.FileSystemLoader([Path(__file__).parent / "web/templates"])
     )
     session_setup(app, SimpleCookieStorage())
-    #loop = asyncio.get_event_loop()
-    #loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(forward_setup(app, XForwardedRelaxed()))
 
     app.add_subapp(
         "/auth/github/",
