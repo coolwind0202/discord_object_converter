@@ -1,2 +1,2 @@
 # discord_object_converter
-discord.py の提供する Discord モデルやデータクラスを、人間にとって可読性の高い辞書に変換するライブラリです。
+the library converts a Discord model what was provided by discord.py to Python dict.

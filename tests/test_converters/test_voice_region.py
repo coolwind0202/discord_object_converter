@@ -1,7 +1,7 @@
 import pytest
 import discord
 
-from src.discord_template_manage.converters.voice_region import VoiceRegionConverter
+from src.discord_object_converter.converters.voice_region import VoiceRegionConverter
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(('region', 'japanese_name'),[

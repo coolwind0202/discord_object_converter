@@ -4,8 +4,8 @@ import pytest
 import discord.ext.test as dpytest
 import discord
 
-from src.discord_template_manage.converters.abstract import AbstractRoleConverter
-from src.discord_template_manage.converters.role import RoleConverter
+from src.discord_object_converter.converters.abstract import AbstractRoleConverter
+from src.discord_object_converter.converters.role import RoleConverter
 
 class _TestRoleConfig(AbstractRoleConverter):
     @classmethod

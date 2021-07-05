@@ -2,7 +2,7 @@ from discord import colour
 import pytest
 import discord
 
-from src.discord_template_manage.converters.guild import GuildConverter
+from src.discord_object_converter.converters.guild import GuildConverter
 
 @pytest.mark.asyncio
 async def test_guild_default_converter(bot: discord.Client):
