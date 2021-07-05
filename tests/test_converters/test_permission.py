@@ -1,7 +1,7 @@
 import pytest
 import discord
-from src.discord_object_converter.converters.abstract import AbstractPermissionConverter
-from src.discord_object_converter.converters.permission import PermissionConverter
+from src.discord_object_converter.abstract import AbstractPermissionConverter
+from src.discord_object_converter.permission import PermissionConverter
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(('key', 'value'), [

@@ -1,7 +1,7 @@
 import pytest
 import discord
 
-from src.discord_object_converter.converters.channels.channel import TextChannelConverter, CategoryChannelConverter
+from src.discord_object_converter.channels.channel import TextChannelConverter, CategoryChannelConverter
 
 @pytest.mark.asyncio
 async def test_text_channel_default_converter(bot: discord.Client):

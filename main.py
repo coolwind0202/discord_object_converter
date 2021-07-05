@@ -1,3 +1,3 @@
-#from src.discord_object_converter.converters import channel
+#from src.discord_object_converter import channel
 
 #print(channel.TextChannelConverter)
