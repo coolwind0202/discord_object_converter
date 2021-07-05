@@ -1,5 +1,5 @@
-import abstract
-import task
+from .abstract import *
+from .task import *
 from .color import ColorConverter
 from .guild import GuildConverter, PartialGuildModel
 from .permission import PermissionConverter
