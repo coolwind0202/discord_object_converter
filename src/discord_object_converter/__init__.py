@@ -1,3 +1,4 @@
+'''
 from .abstract import *
 from .task import *
 from .color import ColorConverter
@@ -14,5 +15,6 @@ from .channels.channel import (
     ChildConverterGetter
 )
 from .channels.getter import ChannelConverterGetter
+'''
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
