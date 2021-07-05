@@ -3,15 +3,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-[packages]
-"discord.py" = "*"
-aiohttp-oauth2 = "*"
-aiohttp-session = {extras = ["secure"], version = "*"}
-aiohttp-remotes = "*"
-aiohttp-jinja2 = "*"
-aioauth-client = "*"
-toml = "*"
-
 [dev-packages]
 dpytest = "*"
 
