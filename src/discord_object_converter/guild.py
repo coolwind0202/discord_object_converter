@@ -5,7 +5,7 @@ import discord
 
 from .abstract import AbstractGuildConverter, PartialDiscordModel
 from .role import PartialRoleModel, RoleConverter
-from .channels.channel import PartialGuildChannelModel
+from .channels.channel import PartialCategoryChannelModel, PartialGuildChannelModel
 from .channels.getter import ChannelConverterGetter
 from . import task
 
@@ -65,13 +65,26 @@ class PartialGuildModel(PartialDiscordModel):
             channel: Optional[discord.abc.GuildChannel] = real_guild.get_channel(channel_data.id_)
             if channel is None:
                 pass  #  現在のギルドに同一IDのチャンネルが存在しないので、追加する
-
+        
         for channel in real_guild.channels:
-            channel_data: Optional[PartialGuildChannelModel] = discord.utils.get(self.channels, id_=channel.id)
+            channel_data: Optional[PartialGuildChannelModel] = discord.utils.get(self._flatted_channels, id_=channel.id)
             if channel_data is None:
                 tasks.append(task.ChannelRemoveTask(channel))  #  設定ファイルに同一IDのチャンネルが存在しないので、削除する
 
         return tasks
+
+    @property
+    def _flatted_channels(self) -> List[PartialGuildChannelModel]:
+        flatted = []
+        for channel in self.channels:
+            if channel.type_ == discord.ChannelType.category:
+                category: PartialCategoryChannelModel = channel
+                flatted.append(category)
+                flatted += category.channels
+            else:
+                flatted.append(channel)
+        return flatted
+
 
 class GuildConverter(AbstractGuildConverter):
     key_id = 'ID'
