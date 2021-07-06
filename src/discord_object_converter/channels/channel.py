@@ -61,7 +61,7 @@ class _BaseChannelConverter(AbstractGuildChannelConverter):
     @classmethod
     def convert(cls, target: _GuildChannelSnowFlake):
         return {
-            cls.key_id: target.id,
+            cls.key_id: str(target.id),
             cls.key_name: target.name,
             cls.key_position: target.position,
             cls.key_overwrites: target.overwrites,
