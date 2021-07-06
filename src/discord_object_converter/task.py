@@ -14,11 +14,11 @@ class RoleAddTask(BaseTask):
     def __init__(self, guild: discord.Guild, *, name: str, permissions: discord.Permissions, colour: discord.Colour, hoist: bool, mentionable: bool):
         self.guild = guild
         self.args = {
-            name: name,
-            permissions: permissions,
-            colour: colour,
-            hoist: hoist,
-            mentionable: mentionable
+            'name': name,
+            'permissions': permissions,
+            'colour': colour,
+            'hoist': hoist,
+            'mentionable': mentionable
         }
 
     async def execute(self):
@@ -35,11 +35,11 @@ class RoleEditTask(BaseTask):
     def __init__(self, role: discord.Role, *, name: str, permissions: discord.Permissions, colour: discord.Colour, hoist: bool, mentionable: bool):
         self.role = role
         self.args = {
-            name: name,
-            permissions: permissions,
-            colour: colour,
-            hoist: hoist,
-            mentionable: mentionable
+            'name': name,
+            'permissions': permissions,
+            'colour': colour,
+            'hoist': hoist,
+            'mentionable': mentionable
         }
 
     async def execute(self):
