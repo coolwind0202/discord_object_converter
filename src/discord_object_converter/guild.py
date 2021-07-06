@@ -18,7 +18,7 @@ class PartialGuildModel(PartialDiscordModel):
     def get_tasks(self, real_guild: discord.Guild) -> List[task.BaseTask]:
         tasks = []
         if real_guild.name != self.name:
-            tasks.append(task.GuildEditTask(self.name))  #  現在のチャンネル名と異なるのでチャンネル名編集のタスクを追加する
+            tasks.append(task.GuildEditTask(real_guild, self.name))  #  現在のチャンネル名と異なるのでチャンネル名編集のタスクを追加する
 
         for role_data in self.roles:
             role: discord.Role = real_guild.get_role(role_data.id_)
@@ -106,7 +106,7 @@ class GuildConverter(AbstractGuildConverter):
             roles.append(RoleConverter.convert(role))
 
         return {
-            cls.key_id: target.id,
+            cls.key_id: str(target.id),
             cls.key_name: target.name,
             cls.key_channels: channels,
             cls.key_roles: roles
