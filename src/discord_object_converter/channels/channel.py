@@ -141,7 +141,7 @@ class VoiceChannelConverter(AbstractVoiceChannelConverter, _BaseChannelConverter
         id_ = int(target[cls.key_id])
         name: str = target[cls.key_name]
         position = int(target[cls.key_position])
-        type_ = discord.ChannelType.text
+        type_ = discord.ChannelType.voice
         bitrate = int(target[cls.key_bitrate])
         user_limit = int(target[cls.key_user_limit])
         rtc_region = VoiceRegionConverter.parse(target[cls.key_rtc_region])
@@ -169,11 +169,11 @@ class StoreChannelConverter(AbstractStoreChannelConverter, _BaseChannelConverter
         return common_data
 
     @classmethod
-    def parse(cls, target: Dict) -> PartialVoiceChannelModel:
+    def parse(cls, target: Dict) -> PartialStoreChannelModel:
         id_ = int(target[cls.key_id])
         name: str = target[cls.key_name]
         position = int(target[cls.key_position])
-        type_ = discord.ChannelType.text
+        type_ = discord.ChannelType.store
         nsfw = target[cls.key_nsfw] == cls.is_nsfw
         return PartialVoiceChannelModel(id_, name, position, None, type_, nsfw)
 
@@ -201,7 +201,7 @@ class StageChannelConverter(AbstractStageChannelConverter, _BaseChannelConverter
         id_ = int(target[cls.key_id])
         name: str = target[cls.key_name]
         position = int(target[cls.key_position])
-        type_ = discord.ChannelType.text
+        type_ = discord.ChannelType.stage_voice
         topic = target[cls.key_topic] if target[cls.key_topic] != cls.no_topic else None
 
         return PartialStageChannelModel(id_, name, position, None, type_, topic)
@@ -247,7 +247,7 @@ class CategoryChannelConverter(AbstractCategoryChannelConverter, _BaseChannelCon
         id_ = int(target[cls.key_id])
         name: str = target[cls.key_name]
         position = int(target[cls.key_position])
-        type_ = discord.ChannelType.text
+        type_ = discord.ChannelType.category
         nsfw = target[cls.key_nsfw] == cls.is_nsfw
         channels = []
 
