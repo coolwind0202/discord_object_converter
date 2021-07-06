@@ -232,7 +232,7 @@ class CategoryChannelConverter(AbstractCategoryChannelConverter, _BaseChannelCon
     def convert(cls, target: discord.CategoryChannel):
         common_data = super().convert(target)
         
-        child_data = list(map(cls.converter_getter.get_converter, target.channels))
+        child_data = list(map(lambda channel: cls.converter_getter.get_converter(channel).convert(channel), target.channels))
 
         category_channel_data = {
             cls.key_nsfw: cls.is_nsfw if target.is_nsfw() else cls.is_not_nsfw,
